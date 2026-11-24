@@ -10,4 +10,7 @@ htmlcov/
 .idea/
 .vscode/
 
-FOM_Backend/
+model/data/
+
+
+model/data/

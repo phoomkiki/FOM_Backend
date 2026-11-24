@@ -8,6 +8,7 @@ from app.schemas.domain import OrderCreate, OrderStatusUpdate
 from app.services.auth_service import get_current_user
 from app.services.data_api import get_one, insert_rows, patch_rows, select_rows
 from app.services.common import owned_order
+from app.services.recommendation_service import mark_ordered
 async def create_order(payload: OrderCreate, user: AuthUser = Depends(get_current_user)):
     address = await get_one("addresses", {"address_id": f"eq.{payload.address_id}", "user_id": f"eq.{user.user_id}"})
     if not address:
@@ -83,6 +84,7 @@ async def create_order(payload: OrderCreate, user: AuthUser = Depends(get_curren
                     "order_item_id": item_rows[0]["order_item_id"], "option_id": opt["option_id"],
                     "option_name": opt["option_name"], "extra_price": opt["extra_price"],
                 })
+    await mark_ordered(user.user_id, payload.shop_id, [menu["menu_id"] for _, menu, *_ in prepared], order["order_id"])
     return {**order, "items": [{"menu_id": m["menu_id"], "menu_name": m["menu_name"], "quantity": i.quantity,
                                  "unit_price": str(p), "line_total": str(t), "options": o}
                                 for i, m, p, t, o in prepared]}

@@ -11,6 +11,7 @@ from app.api.v1.delivery import router as delivery_router
 from app.api.v1.admin import router as admin_router
 from app.api.v1.refund import router as refund_router
 from app.api.v1.privacy import router as privacy_router
+from app.api.v1.recommendation import router as recommendation_router
 
 api_router = APIRouter()
 
@@ -29,5 +30,6 @@ for controller_router in (
     admin_router,
     refund_router,
     privacy_router,
+    recommendation_router,
 ):
     api_router.include_router(controller_router)
